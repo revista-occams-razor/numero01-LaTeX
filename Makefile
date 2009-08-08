@@ -1,5 +1,5 @@
 NUMBER=01
-EDITION=02
+EDITION=03
 
 NAME=occams-razor-${NUMBER}-${EDITION}
 
