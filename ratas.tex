@@ -1,0 +1,165 @@
+% Este fichero es parte del Número 1 de la Revista Occam's Razor
+% Revista Occam's Razor Número 1
+%
+% (c) 2007, Occam's Razor.
+% Contenido disponible bajo licencia Reconocimiento-No comercial-Compartir bajo la misma licencia 2.5 España de Creative Commons. Para ver una copia de esta licencia, visite http://creativecommons.org/licenses/by-nc-sa/2.5/es/ o envie una carta a Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+% 
+
+% Seccion Ratas de Biblioteca
+%
+% Incluye imagen del artículo
+\rput(1,-2){\resizebox{!}{4cm}{{\epsfbox{zlib_ddj.eps}}}}
+
+% -------------------------------------------------
+% Cabecera
+\begin{flushright}
+\msection{introcolor}{black}{0.25}{RATAS DE BIBLIOTECA}
+
+\mtitle{7cm}{Si no vas sobrao ... -lz}
+
+\msubtitle{12cm}{Como manejar ficheros comprimidos en tus programas}
+
+{\sf por Er aplastao}
+
+{\psset{linecolor=black,linestyle=dotted}\psline(-12,0)}
+\end{flushright}
+
+\vspace{2mm}
+% -------------------------------------------------
+
+\begin{multicols}{2}
+
+% Definición de colores
+% FIXME: La definición en portada.tex no propaga.
+\definecolor{introcolor}{rgb}{0.6,0.7,0.3}
+\definecolor{titlecolor}{rgb}{0.4,0.5,0.1}
+\definecolor{excolor}{rgb}{0.8,0.8,0.8}
+
+% Introducción
+\colorbox{introcolor}{
+\begin{minipage}{.9\linewidth}
+
+{{\resizebox{!}{1.0cm}{T}}{odos estamos acostumbrados a comprimir
+ficheros o incluso directorios enteros cuando empezamos a ir escasos de
+espacio en disco. Normalmente, cuando queremos recuperar los datos
+comprimidos, primero los descomprimimos y luego los usamos. No sería
+estupendo eliminarnos este paso?
+}}
+
+\end{minipage}
+}
+
+\vspace{2mm}
+
+% Cuerpo del artículo
+
+Muchos habréis comprobado que en los sistemas GNU/Linux existen varios
+programas capaces de trabajar directamente con ficheros comprimidos,
+como por ejemplo gv (visor de postscript) o vim (editor de
+textos). Lejos de lo que podría parecer a simple vista, añadir esta
+funcionalidad a nuestros programas es mucho más fácil de lo que nos
+imaginamos gracias a la librería {\em libz.so}.
+
+\sectiontext{white}{black}{GRABANDO FICHEROS}
+
+El siguiente fragmento de código muestra como generar un fichero
+comprimido utilizando la librería {\em zlib}:
+
+{\small
+\begin{verbatim}
+#include <zlib.h>
+
+int main ()
+{
+	gzFile  f;
+	f = gzopen (``mi_fichero.txt.gz'', ``wt'');
+	for (int i = 0; i < 20; i++)
+	  gzprintf (f, ``Hello World %d\n'', i);
+	gzclose(f);
+
+	return 0;
+}
+\end{verbatim}
+}
+
+En el ejemplo anterior se han omitido todas las comprobaciones de
+errores, para poder concentrarnos en el uso de la librería. La verdad
+es que cualquiera que haya escrito un programa para grabar un fichero
+de texto en C lo verá claro :).
+
+Para compilar este ejemplo, debemos indicar que se utilice la librería
+zlib, esto lo conseguimos con una línea como la siguiente:
+
+\begin{verbatim}
+gcc mi_codigo_de_lamuerte.c -o z_ejemplo -lz
+\end{verbatim}
+
+Que nos generará un ejecutable llamado {\tt z\_ejemplo}.
+
+\sectiontext{white}{black}{CARGANDO FICHEROS}
+
+Ya sabemos como generar ficheros comprimidos. Ahora solo tenemos que
+saber como leerlos de nuevo desde nuestros programas.
+
+Si os cuento que existe una función llamada {\em gzgets}, seguro que
+la mayoría no necesitaría saber más. Pero por si hay algún despistado
+en la sala, ahí va un ejemplillo de uso.
+
+{\small
+\begin{verbatim}
+#include <stdio.h>
+#include <zlib.h>
+
+int main ()
+{
+	gzFile f;
+	char   line[256];
+
+	f = gzopen (``mi_fichero.txt.gz'', ``rt'');
+	while (!gzeof (f))
+	{
+	   gzgets (f, line, 256);
+	   printf (``%s\n'', line);
+	}
+	gzclose(f);
+}
+\end{verbatim}
+}
+
+Bastante sencillo no?. Así que ya podemos hacer que nuestros programas
+graben sus ficheros de texto en formato comprimido y recuperarlos
+posteriormente sin más.
+
+\sectiontext{white}{black}{Y QUE MÁS?}
+
+Pues para los más curiosos que quieran sacarle todo el jugo a esta
+librería, lo mejor que pueden hacer es mirarse el fichero {\em zlib.h}
+que normalmente estará en el directorio {\tt /usr/include}.
+
+Este fichero contiene todos los prototipos y estructuras de datos
+utilizados por la librería con amplios comentarios para cada una de
+ellas. 
+
+Lo mejor es empezar por el final, donde encontrareis las funciones que
+hemos visto en los ejemplos anteriores, y unas cuantas más que os
+resultarán muy familiares.
+
+\begin{entradilla}
+{\em ``{\color{titlecolor}{La librería zlib}} nos facilita el uso de ficheros comprimidos''}
+\end{entradilla}
+
+La primera parte del fichero contiene el API de más bajo nivel con el
+que controlar los parámetros de compresión y comprimir/descomprimir
+datos en buffers de memoria, lo cual puede ser útil en algunas
+circunstancias.
+
+Finalmente, recordad que para poder compilar estos ejemplos necesitáis el paquete de desarrollo {\em zlib} que incluye el fichero de cabecera {\tt zlib.h} que hemos utilizado.
+
+Hasta el próximo número.
+
+\raggedcolumns
+\pagebreak
+
+\end{multicols}
+
+\pagebreak

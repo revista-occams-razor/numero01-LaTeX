@@ -1,0 +1,207 @@
+% Este fichero es parte del Número 1 de la Revista Occam's Razor
+% Revista Occam's Razor Número 1
+%
+% (c) 2007, Occam's Razor.
+% Contenido disponible bajo licencia Reconocimiento-No comercial-Compartir bajo la misma licencia 2.5 España de Creative Commons. Para ver una copia de esta licencia, visite http://creativecommons.org/licenses/by-nc-sa/2.5/es/ o envie una carta a Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+% 
+
+% Sección Distros
+% 
+% Incluye imagenes del artículo
+\rput(1,-2.0){\epsfbox{usb_stick1.eps}}
+\rput(13,-25){\resizebox{!}{5cm}{{\epsfbox{dsl-boot.eps}}}}
+
+% -------------------------------------------------------
+% Cabecera
+\begin{flushright}
+\msection{introcolor}{black}{0.11}{DISTROS}
+
+\mtitle{7cm}{GNU/Linux en USB}
+
+\msubtitle{12cm}{Como llevar nuestro sistema en el bolsillo}
+
+{\sf por Er Viajante}
+
+{\psset{linecolor=black,linestyle=dotted}\psline(-12,0)}
+\end{flushright}
+
+
+\vspace{2mm}
+% -------------------------------------------------------
+
+\begin{multicols}{2}
+
+% Definición de colores
+% FIXME: La definición en portada.tex no propaga.
+\definecolor{introcolor}{rgb}{0.6,0.7,0.3}
+\definecolor{titlecolor}{rgb}{0.4,0.5,0.1}
+\definecolor{excolor}{rgb}{0.8,0.8,0.8}
+
+% Introducción
+\intro{introcolor}{Q}{ué te parecería llevarte tu sistema GNU/Linux a cualquier parte,
+guardadito en un bolsillo o en un sobre de papel... que si, que
+no... Pedimos disculpas por esta regresión infantil. En este artículo
+os vamos a contar como instalar un sistema GNU/Linux completo en una
+memoria USB para poder usar vuestro sistema operativo favorito en
+cualquier ordenador. 
+}
+
+\vspace{2mm}
+
+% Cuerpo del artículo
+
+Una de las ventajas que tienen los sistemas GNU/Linux es que se pueden
+personalizar hasta extremos inconcebibles. Uno de estos casos es la
+mini distribución DSL (\verb#http://www.damnsmalllinux.org/#) también
+conocida como {\em Damn Small Linux}, lo que se podría traducir por
+{\em Linux Malditamente Pequeño} o algo más fuerte. 
+
+\sectiontext{white}{black}{¿POR QUÉ DSL?}
+
+Buena pregunta (y no es porque la haya hecho yo :). En realidad, hoy
+por hoy, existen un montón de distribuciones que se pueden instalar en
+un dispositivo de almacenamiento USB de forma sencilla y realmente no
+hay mucha diferencia entre utilizar unas u otras. De todas formas,
+respondiendo a la pregunta, podemos decir: 
+
+\begin{itemize}
+\item De todas las que probamos fue la que dio menos problemas.
+\item Está basada en knoppix, utilizando su sistema de detección de
+hardware que nos ofrece cierta seguridad de que funcionará en la
+mayoría de los ordenadores. 
+\item Es muy pequeña y se puede cargar totalmente en RAM como lo que ``vuela''.
+\item Tiene un sistema de paquetes de extensión {\em myDSL} muy sencillo de utilizar.
+\end{itemize}
+
+
+\sectiontext{white}{black}{LA FORMA FACILÍSIMA}
+
+La forma más sencilla de instalar DSL en un dispositivo externo USB es la siguiente:
+
+\begin{itemize}
+\item Arranca con el Live-CD que puedes descargarte de
+\verb#http://www.damnsmalllinux.org/# 
+\item Selecciona el menú instalar en dispositivo USB pulsando con el
+botón derecho sobre el escritorio (App $\rightarrow$ Tools
+$\rightarrow$ Install to Pen-Drive) 
+\end{itemize}
+
+Aquí tendremos que escoger si el dispositivo va a arrancar con bios
+USB-ZIP o USB-HDD. Esto ya dependerá del sistema final en el que se
+vaya a ejecutar y el soporte que de su BIOS para el arranque desde
+dispositivos USB. 
+
+\begin{entradilla}
+{\em ``{\color{titlecolor}{DSL es una de las distribuciones Linux más pequeña}} y que ofrece un conjunto de herramientas bastante completo''}
+\end{entradilla}
+
+Según la documentación de {\tt syslinux} el modo recomendado es
+USB-HDD, sin embargo, ciertas BIOS solo soportan el modo USB-ZIP en el
+que la tabla de particiones del dispositivo USB debe tener un formato
+especial. Los ordenadores modernos suelen soportar el sistema USB-HDD,
+pero si no estás seguro comprueba en tu BIOS qué tipos están
+soportados. 
+
+Para asegurar, usa dos memorias USB :)
+
+\sectiontext{white}{black}{EXTENSIONES MYDSL}
+ 
+Como comentábamos más arriba, la mini-distro DSL proporciona un
+sencillo sistema de extensiones conocidas como {\em myDSL}. En la
+propia web de DSL se mantiene un repositorio con varias aplicaciones
+empaquetadas utilizando este sistema. Comentaros que existen otros dos
+tipos de extensiones que puede manejar DSL: .uci y tar.gz. No las
+vamos a discutir en este artículo pero siempre está bien saberlo. 
+
+El propio sistema DSL incorpora una herramienta gráfica para el manejo
+de estas extensiones que podéis encontrar en el menú: 
+
+Applications$\rightarrow$Tools$\rightarrow$myDSL Extension Browser
+
+Estas extensiones también pueden ser cargadas cuando el sistema
+arranca, ya sea configurando los parámetros de arranque del sistema o
+simplemente copiando los ficheros .mydsl que nos interesen en el
+directorio raíz del dispositivo USB. 
+
+\raggedcolumns
+\eOpage
+
+\rput(6,-22){\resizebox{!}{9.6cm}{{\epsfbox{dsl-usb-install.eps}}}}
+\rput(15,-21.5){\resizebox{5.0cm}{!}{{\epsfbox{warnning.eps}}}}
+\bOpage{introcolor}{0.11}{DISTROS}
+
+\sectiontext{white}{black}{CREANDO EXTENSIONES}
+
+Una tarea interesante es crear nuestras propias extensiones, de forma que podamos instalar nuestros programas en el dispositivo USB para ejecutarlos en otra máquina, por ejemplo, a modo de demostración.
+
+Los paquetes myDSL son simples ficheros tar.gz que se descomprimen desde el directorio raíz, como la mayoría de los sistemas de paquetes. A modo de ejemplo, vamos a crear un paquete para nuestras prácticas de laboratorio de programación intempestiva. Los pasos a seguir serían estos:
+
+{\small
+\begin{verbatim}
+# cd /tmp
+# mkdir -p pkg/usr/local/bin
+# mkdir -p pkg/usr/local/src
+# cp pract1 parct2 parct3 pkg/usr/local/bin
+# cp pract1.c parct2.c parct3.c pkg/usr/local/bin
+# tar czvf intemps.dsl ./pkg
+\end{verbatim}
+}
+
+O si hemos sido precavidos y utilizado las {\em Autotools} de GNU...
+
+{\small
+\begin{verbatim}
+# ./configure --prefix=/tmp/pkg
+# make && make install
+# cd /tmp
+# tar czvf intemps.dsl ./pkg
+\end{verbatim}
+}
+
+Lo que nos simplifica un montón las cosas, sobre todo en cuanto empezamos a tener librerías, ejecutables, ficheros de configuración, documentación, etc...
+
+
+\sectiontext{white}{black}{OTRAS VENTAJAS}
+
+Además de todo lo comentado hasta el momento, DSL tiene un par de
+características muy interesantes. La primera de ellas es la opción de
+cargar todo el sistema en memoria RAM, con lo que conseguimos que
+nuestro sistema no tenga que acceder al dispositivo USB para nada y
+por tanto se ejecute mucho más rápido. 
+
+Para utilizar esta opción, solamente tenemos que pasar el parámetro
+{\tt toram} al sistema utilizando el prompt que se nos proporciona en
+la pantalla de arranque. 
+
+Otra opción interesante es que DSL incluye {\tt qemu}, una máquina
+virtual capaz de simular un PC completo. Esto permite a DSL arrancar
+en una ventana dentro de una sesión Windows, con lo cual podremos
+utilizar nuestro sistema incluso si la máquina no dispone de opciones
+de arranque por USB o CD-ROM. 
+
+Finalmente, comentar que DSL también se puede instalar como un
+Live-CD, es decir, como un sistema capaz de arrancar desde un CD-ROM
+sin necesidad de instalar ningún fichero en nuestro disco duro, lo que
+se convierte en una interesante opción si una determinada máquina no
+dispone de la opción de arranque USB. 
+
+Lo interesante de este Live-CD y de donde toma el nombre esta
+distribución, es que solamente ocupa 50Mb, por lo que puede grabarse
+en un CD de 23 min, de esos pequeñitos, e incluso en los promocionales
+con forma rectangular y tamaño de tarjeta de visita. 
+
+
+\sectiontext{white}{black}{HASTA LA PRÓXIMA}
+
+En este artículo os hemos contado algunas de las posibilidades que
+ofrecen las nuevas distribuciones de GNU/Linux, centrándonos en un
+caso concreto: DSL. Como comentábamos existen muchas otras y las
+posibilidades de personalización de estos sistemas son realmente
+increíbles. No dudéis en enviarnos historias sobre como utilizáis
+vosotros estas herramientas. 
+
+Hasta el próximo número.
+
+\raggedcolumns
+
+\end{multicols}

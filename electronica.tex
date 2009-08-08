@@ -1,0 +1,289 @@
+% Este fichero es parte del Número 1 de la Revista Occam's Razor
+% Revista Occam's Razor Número 1
+%
+% (c) 2007, Occam's Razor.
+% Contenido disponible bajo licencia Reconocimiento-No comercial-Compartir bajo la misma licencia 2.5 España de Creative Commons. Para ver una copia de esta licencia, visite http://creativecommons.org/licenses/by-nc-sa/2.5/es/ o envie una carta a Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+% 
+
+% Sección Electrónica
+%
+% Incluye imagen del artículo
+\rput(8.2,-6.8){\resizebox{!}{11cm}{{\epsfbox{image1.eps}}}}
+
+% ---------------------------------------------
+% Cabecera
+\begin{flushright}
+\msection{introcolor}{black}{0.21}{ELECTRÓNICA}
+
+\vspace{11.5cm}
+
+\mtitle{5cm}{PIC10F200}
+
+\msubtitle{10cm}{EL MÁS PEQUE DE MICROCHIP}
+
+{\sf por Carlos Rodríguez Alemparte}
+
+{\psset{linecolor=black,linestyle=dotted}\psline(-12,0)}
+\end{flushright}
+
+\vspace{2mm}
+% ---------------------------------------------
+
+\begin{multicols}{2}
+
+% Definición de colores
+% FIXME: La definición en portada.tex no propaga.
+\definecolor{introcolor}{rgb}{0.6,0.7,0.3}
+\definecolor{titlecolor}{rgb}{0.4,0.5,0.1}
+\definecolor{excolor}{rgb}{0.8,0.8,0.8}
+
+% Introducción 
+\intro{introcolor}{A}{ principios del 2.006 llegaron a mis manos las
+primeras muestras de este microcontrolador, cortesía del fabricante
+yanki de Arizona MICROCHIP. Desde hace unos 5 años vengo probando ya
+unos cuantos tipos de microcontroladores PIC, pero tengo que reconocer
+que este ha sido uno de los que más ha despertado mi curiosidad desde
+el momento en que vi el tipo de producto que era en la página web de
+Microchip: 
+www.MicroChip.com
+}
+
+\vspace{2mm}
+
+% Cuerpo del artículo
+
+ Esta gente estaba apostando por un microcontrolador de prestaciones
+ casi ridículas, poco menos que te daba la risa al ver el tipo de
+ arquitectura que tenía. Sin embargo, al mismo tiempo, te quedabas
+ prendado de esa simplicidad casi máxima, y al instante la siguiente
+ pregunta era: ``Bueno, ... y esto ... ¿cuánto cuesta?'' Pues la
+ respuesta fue que el PIC10F200 se podía conseguir al precio de 47
+ céntimos de euro si pedía una tandada de 26 unidades junto con otro
+ pedido lo suficientemente grande como para que los portes de envío no
+ enmascarasen el precio del producto. Yo la verdad tenía un pedido de
+ unos 600 euros casi, con lo cual los 12.50 euros de portes no eran
+ muy significativos. 
+ Lo realmente interesante es que tenemos un microcontrolador
+ reprogramable con toda su inteligencia por menos de medio Euro, sí,  
+menos de 0.50 euros.
+
+\begin{entradilla}
+{\em Por {\color{titlecolor}menos de 50 céntimos de euro} puedes conseguir todo un microcontrolador}
+\end{entradilla}
+
+ Ya han pasado unos meses y, evidentemente, la cosa no ha ido a más, y
+ me refiero al precio. Ahora, en el mes de Noviembre del 2.006 lo
+ podemos conseguir por 36 céntimos a partir de 100 unidades comprando
+ en Microchip Direct, o sea, directamente al fabricante, cosa que ya
+ es posible desde hace unos 2 años en España, con lo cual el
+ intermediario que le gana un pastón a este material queda fulminado
+ de la cadena comercial de incremento de costes, otro efecto
+ beneficioso de la globalización (y no digo que todos lo sean, ...). A
+ continuación, una captura de pantalla de la página de compra de
+ MicroChip Direct para el 10F200: 
+
+
+\raggedcolumns
+\eOpage
+
+
+\begin{flushright}
+\msection{introcolor}{black}{0.21}{ELECTRÓNICA}
+\end{flushright}
+
+\begin{figure}[ht]
+\includegraphics[width=0.9\textwidth]{image2.eps}     
+
+{\em Página de Compra de Microchip}                       
+\end{figure}
+
+\rput(4,-8){\resizebox{7.8cm}{!}{{\epsfbox{image3.eps}}}}
+
+\begin{multicols}{2}
+\sectiontext{white}{black}{EL PATILLAJE}
+
+En la siguiente imagen podemos ver un esquema del patillaje del
+10F200, con sus 4 puertos de entrada/salida. Salvo el GP3, que sólo
+puede funcionar como entrada o pin de RESET por nivel bajo, según se
+configure, cualquiera de los otros 3 pines se puede configurar como
+entrada o como salida. Además en estos 3 últimos pines (GP2, GP1 y
+GP0)  se puede colocar un pull-ip interno de unos 10 K, evitando
+componentes externos.  
+
+\vspace{6cm}
+
+{\em Patillaje del PIC10F200}
+
+\bigskip
+
+Una opción interesante para el pin GP2 es la de sacar una réplica del
+oscilador interno dividido por 4. El PIC10F200 tiene un oscilador
+interno de 4 MHz que le permite procesar instrucciones a 1 MIP ( en
+general, ya que los cambios de flujo, como GOTO o CALL por ej.,
+consumen lo mismo que  2 instrucciones normales). Esa señal cuadrada
+de 1 MHz puede ser muy útil para multitud de aplicaciones.  
+
+\sectiontext{white}{black}{INSTRUCCIONES Y MEMORIA}
+
+El PICF200 cuenta con 256 instrucciones de FLASH, lo que nos permite
+darle hasta 256 órdenes, del tipo GOTO, CALL, MOV, SWAP, BTFSS, RET,
+etc. La FLASH se puede reprogramar hasta unas 100.000 veces, con una
+retención en las celdillas de la FLASH de al menos 40 años, según
+MicroChip.  
+
+Carece de memoria EEPROM y sólo permite anidar 2 veces la instrucción
+CALL, o sea, la tercera vez que hagamos un CALL sin un RETLW, nos
+vamos a las ``quimbambas'' y a partir de ahí es como jugar a la
+lotería.  
+
+Cuenta con interrupciones, aunque el vector de interrupción coincide
+con el vector de RESET, o sea que ... , al saltar una interrupción en
+realidad el micro se resetea y sólo disponemos de unos bits de estado
+especiales en el registro STATUS para enterarnos de si acabamos de
+iniciar la ejecución ( arranque o Reset ) o si saltó una
+interrupción. La verdad es un pequeño engorro, estando acostumbrado a
+los 12F y 16F con el vector de interrupción en la dir 04 de la FLASH,
+y con 8 niveles de anidamiento.  
+
+\begin{entradilla}
+{\it El PIC10F200 proporciona una {\color{titlecolor}{pila de solo 2 posiciones}}}
+\end{entradilla}
+
+
+\sectiontext{white}{black}{ALGUNAS APLICACIONES}
+
+Así y todo, para hacer multitud de tonterías sigue siendo un micro muy
+útil y válido. Yo la 1ª aplicación interesante que le he dado ha sido
+la de cargar los registros de un PLL de acceso por bus serie de 3
+hilos ( Latch Enable, Clock y Data ) para un ADF4360 de Analog
+Devices, para un trabajito para Fernando Isasi, otro entusiasta del
+Hardware de la Universidad de Vigo, y padrino tecnológico de muchos de
+nosotros.  
+
+Y la 2ª fue la de secuenciar unos códigos de destellos para una baliza
+óptica con 1 LED LUXEON III, para un prototipo para el CIS ( Centro de
+Investigaciones Submarinas ), otra empresa gallega al alza gracias a
+la política actual que fomenta la Investigación y el Desarrollo
+tecnológicos. Bueno, espero que mi tocayo del CIS acabe usando esos
+LUXEONs en algún producto comercial. 
+
+
+
+\raggedcolumns
+
+\end{multicols}
+\pagebreak
+
+\rput(12.5,-8){\resizebox{7.8cm}{!}{{\epsfbox{image4.eps}}}}
+\bOpage{introcolor}{0.21}{ELECTRÓNICA}
+
+\sectiontext{white}{black}{UN EJEMPLO}
+
+Y como la teoría está muy bien, pero yo soy un fiel defensor de la
+práctica y las cosas palpables entre los dedos, a continuación ponemos
+un pequeño código fuente en ASM para empezar a hacer pinitos con el
+10F200.  
+
+Lo que hace es una parida (una trivialidad, para los que no entienda
+el término): el programa configura los puertos de entrada y salida del
+PIC, activa la salida de la onda cuadrada de 1 MHz en el GP2 y después
+se pone a chequear un pulsador conectado a un pin de entrada del PIC,
+en el GPIO Cero, haciendo un eco de este pin de entrada sobre el LED
+conectado al GPIO1, configurado como salida.  
+
+El pulsador dispone de un pull-up interno en el PIC de unos 10 K que
+también activamos previamente, lo cual nos evita poner uno externo. 
+
+
+ El código máquina compilado es tan sencillo como el que sigue, en
+ formato .hex, lo pongo porque puede ser útil para quien no esté
+ familiarizado con el MPLAB (el ensamblador de Microchip): 
+
+\begin{small}
+\begin{verbatim}
+:020000040000FA
+:100000007000090C06000F0C020005050607260407
+:0600100006062605060AA3
+:021FFE00EB0FE7
+:00000001FF
+\end{verbatim}
+\end{small}
+
+
+
+Y a continuación un esquema para ver con claridad lo que debemos de
+montar para probar ese código fuente con el 10F200.  
+
+\columnbreak
+
+Es una captura de pantalla de un simulador bastante bueno para
+microcontroladores PIC, aunque por desgracia tiene una interfaz con el
+usuario que podría llevarse todos los primeros premios habidos y por
+haber para el programa informático menos intuitivo del mercado. La
+verdad es que aún no he conocido a nadie que haya logrado no cabrearse
+al empezar a hacer cosas con el Proteus, lo cual tiene mérito
+(negativo..., pero mérito). 
+
+\vspace{5cm}
+
+\medskip
+
+Bueno, y sin más ... un saludo para todo el grupo del GPI de la
+Universidad de Vigo, y para los del Laboratorio 303 de Ingeniería de
+Radio. Si alguien tiene alguda duda o sugerencia ya sabe:  
+
+\medskip
+
+Phone: 649 12 69 62
+
+Mail:   \verb#CarlosAlemparte@uvigo.es#
+
+\raggedcolumns
+
+\end{multicols}
+
+\begin{figure}[ht]
+\lstset{language=[x86masm]Assembler,frame=tb,framesep=5pt,basicstyle=\scriptsize}   
+\begin{lstlisting}
+; PROGRAMA de MUESTRA para el 10F200 by EB1IVJ, 
+; Carlos R. Alemparte, Nov 2006
+;
+; Este programa hace un eco de un pulsador en GPIO_0 sobre un LED en GPIO_1 y saca 
+; por GPIO2 una onda cuadrada de 1 MHz, útil como oscilador
+
+LIST        P=10F200 ; mikrokontrolador PIC k usamos
+
+__CONFIG    _CP_OFF & _WDT_OFF & _MCLRE_OFF & _IntRC_OSC  
+
+#include <p10F200.inc> 
+
+#define  PULSADOR GPIO,0  ; pin 1
+#define  LED      GPIO,1  ; pin 3
+
+; RAM disponible: Desde H'10' hasta H'1F', sólo 16 BYTEs
+UNA_VARIABLE   EQU 0x10 ; ponemos esto para ver como se asigna un nombre a una variable 
+
+
+      ORG   0000H         ; monta las instrucciones a partir de la dir H'0000' de la FLASH
+      CLRF  UNA_VARIABLE  ; no vale para nada, es para ver como se borra una posición de RAM
+INI   MOVLW B'00001001'   ; GPIO3=IN  GPIO2=OUT  GPIO1=OUT  GPIO0=IN ; 
+                          ; 1s pa ENTRADAs y 0s pa SALIDAs 
+      TRIS  GPIO          ; lo mismo que MOVWF TRISIO   ; GP3  es sólo ENTRADA
+
+      MOVLW B'00001111'   ; habilitamos Pull-Up interno para GPIO, entre otras cosas
+      OPTION              ; esta instrucción transfiere W a OPTION, 
+                          ; que es un registro "fantasma"
+      BSF   OSCCAL,FOSC4  ; Oscilador interno de 4 MHz/4 = 1 MHz OUTPUT, se saca por el GP2
+           
+BUKLE BTFSS PULSADOR
+      BCF   LED
+      BTFSC PULSADOR
+      BSF   LED
+      GOTO BUKLE
+
+      END    ; indica al ensamblador el final del código fuente 
+\end{lstlisting}
+{\em Código ASM de nuestro ejemplo}
+\end{figure}
+
+\pagebreak

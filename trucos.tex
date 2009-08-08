@@ -1,0 +1,188 @@
+% Este fichero es parte del Número 1 de la Revista Occam's Razor
+% Revista Occam's Razor Número 1
+%
+% (c) 2007, Occam's Razor.
+% Contenido disponible bajo licencia Reconocimiento-No comercial-Compartir bajo la misma licencia 2.5 España de Creative Commons. Para ver una copia de esta licencia, visite http://creativecommons.org/licenses/by-nc-sa/2.5/es/ o envie una carta a Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+% 
+
+\rput(13,-22){\resizebox{!}{8cm}{{\epsfbox{trick.eps}}}}
+\rput(1,-2){\resizebox{!}{5cm}{{\epsfbox{tophat.eps}}}}
+\begin{flushright}
+\msection{red}{black}{0.1}{TRUCOS}
+
+\mtitle{6cm}{Con un par... de líneas}
+
+\msubtitle{8cm}{Chuletillas para hacer cosas mú rápido}
+
+{\sf por Tamariz el de la Perdíz}
+
+{\psset{linecolor=black,linestyle=dotted}\psline(-10,0)}
+
+\end{flushright}
+
+\vspace{4mm}
+
+\begin{multicols}{2}
+\raggedcolumns
+
+
+\sectiontext{white}{black}{PROCESANDO TEXTO CON PERL EN UNA LÍNEA}
+\hrule
+\vspace{2mm}
+
+Aunque el comando grep funciona perfectamente, puede ser útil
+simularlo utilizando una línea de código Perl.
+
+
+\vspace{2mm}
+
+\hrule
+{\scriptsize
+{\begin{lstlisting}{}
+perl -e 'while (<>) {print if /hola/;}' mi_fichero
+\end{lstlisting}
+}
+}
+\hrule
+\vspace{2mm}
+
+O de forma más breve utilizando el flag -n que simplemente comparando
+estos dos ejemplos sabréis qué hace. 
+
+\vspace{2mm}
+\hrule
+{\scriptsize
+{\begin{lstlisting}{}
+perl -ne 'print if /hola/;' mi_fichero
+\end{lstlisting}
+}
+}
+\hrule
+\vspace{2mm}
+
+
+
+Vamos con un ejemplo un poco más útil. Supongamos que tenemos un fichero con datos ordenados en columnas y queremos quedarnos solamente con la primera (el valor de ordenadas) y la tercera, digamos que para hacer una representación gráfica solamente de esos datos. El siguiente script:
+
+\vspace{2mm}
+
+\hrule
+{\scriptsize
+{\begin{lstlisting}{}
+perl -e 'while (<>) {@v=split; 
+> print "$v[0]\t$v[2]\n"}' mi_fichero
+\end{lstlisting}
+}
+}
+\hrule
+\vspace{2mm}
+
+Aunque lo podríamos haber hecho con \texttt{awk} con una línea como
+
+{\scriptsize\verb!cat mi_fichero | awk -e '{print \$1,\$2}'!}
+
+
+\sectiontext{white}{black}{CREAR IMAGEN CD Y ACCEDER A EL}
+\hrule
+\vspace{2mm}
+
+El siguiente truco nos permite generar una imagen exacta de un CD y acceder a ella. Las siguientes líneas hacen el trabajo poniendo el contenido el CD en el directorio /mnt/temp.
+
+\vspace{2mm}
+
+
+\hrule
+{\scriptsize
+{\begin{lstlisting}{}
+# dd if=/dev/cdrom of=mi_imagen.iso
+# mount -o loop mi_imagen.iso /mnt/tmp
+# ...
+# umount /mnt/tmp
+\end{lstlisting}
+}
+}
+\hrule
+\vspace{2mm}
+
+Recuerda que debes ser root para ejecutar los comandos del ejemplo 3 y no olvides desmontar el dispositivo cuando hayas terminado con él.
+
+
+\sectiontext{white}{black}{MANEJAR CARACTERES DE CONTROL EN VIM}
+\hrule
+\vspace{2mm}
+
+En ocasiones es necesario manejar caracteres de control dentro de ficheros de texto, por ejemplo, para insertar o sustituir tabuladores. La forma de introducir caracteres como el tabulador en el modo comando del vim es pulsar la combinación de teclas \texttt{CONTROL} + V y luego pulsar la tecla del carácter que se desea utilizar (return, bs, TAB,...). 
+
+\vspace{6mm}
+
+\sectiontext{white}{black}{GENERAR GRÁFICOS A PARTIR DE FICHEROS DE TEXTO}
+\hrule
+\vspace{2mm}
+
+A partir de un fichero de texto que contenga una columna de datos, podemos obtener rápidamente una representación gráfica de los mismos utilizando la herramienta \texttt{gnuplot} utilizando los siguientes comandos:
+
+\vspace{2mm}
+
+\hrule
+{\scriptsize
+{\begin{lstlisting}{}
+# wc -l text.dat
+25
+# gnuplot
+gnuplot> plot [t=1:25] "test.txt" using ($2)
+\end{lstlisting}
+}
+}
+\hrule
+\vspace{2mm}
+%$
+
+
+Si nuestro fichero tuviera dos columnas en las que la primera
+representa los valores de abscisas, la siguiente secuencia de
+instrucciones gnuplot mostraría la gráfica. Además, en este caso, los
+distintos puntos se unirán utilizando líneas rectas (parámetro
+\texttt{with lines}). 
+
+\vspace{2mm}
+
+\hrule
+{\scriptsize
+{\begin{lstlisting}{}
+# wc -l text.dat
+25
+# gnuplot
+gnuplot> plot "test.txt" using ($1):($2) with lines
+\end{lstlisting}
+}
+}
+\hrule
+\vspace{2mm}
+
+
+%% Call for tricks
+
+\vspace{2mm}
+
+\colorbox{introcolor}{
+\begin{minipage}{.9\linewidth}{
+\textbf{\textsf{Envía tus trucos}}
+
+\vspace{1mm}
+
+\textsf{Puedes enviarnos esos trucos que usas a diario para compartirlos con el resto de lectores a la dirección: }
+
+\vspace{2mm}
+
+\texttt{occams-razor@uvigo.es}
+}
+\end{minipage}
+}
+
+\raggedcolumns
+\pagebreak
+
+\vspace{6cm}
+\end{multicols}
+
+\pagebreak

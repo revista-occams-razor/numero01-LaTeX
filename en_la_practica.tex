@@ -1,0 +1,289 @@
+% Este fichero es parte del Número 1 de la Revista Occam's Razor
+% Revista Occam's Razor Número 1
+%
+% (c) 2007, Occam's Razor.
+% Contenido disponible bajo licencia Reconocimiento-No comercial-Compartir bajo la misma licencia 2.5 España de Creative Commons. Para ver una copia de esta licencia, visite http://creativecommons.org/licenses/by-nc-sa/2.5/es/ o envie una carta a Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+% 
+
+% Sección en la Práctica
+%
+% Incluye imagenes del artículo
+\rput(-1,-5){\resizebox{!}{9cm}{{\epsfbox{Rack.eps}}}}
+\rput(12,-10){\resizebox{!}{4cm}{{\epsfbox{1U-computer.eps}}}}
+\rput(12,-23){\resizebox{!}{6cm}{{\epsfbox{subrack-iac-c915a.eps}}}}
+
+% -----------------------------------------------------------
+% Cabecera
+\begin{flushright}
+\msection{introcolor}{black}{0.22}{EN LA PRÁCTICA}
+
+\mtitle{6cm}{Eligiendo Ordenador}
+
+\msubtitle{7cm}{Más allá de la torre y el portátil}
+
+{\sf por Tony Cassette}
+
+{\psset{linecolor=black,linestyle=dotted}\psline(-10,0)}
+
+\end{flushright}
+
+\vspace{2mm}
+% -----------------------------------------------------------
+
+\begin{multicols}{2}
+
+\intro{introcolor}{E}{n general, se cree que un ordenador puede ser
+una torre (con sus distintas variantes), un {\em desktop} o un
+portátil. Sin embargo, el mundo esta lleno de ordenadores con factores
+de forma muy diferentes, más adecuados para unas u otras soluciones. En
+este artículo os descubriremos algunos de los más utilizados.
+}
+
+\vspace{4mm}
+
+\sectiontext{white}{black}{ENTORNOS INDUSTRIALES. RACKS}
+
+Cuando nos alejamos de las oficinas y nos adentramos en entornos más
+industriales o en general en soluciones más específicas, los
+ordenadores raramente están solos. En una planta industrial, el
+ordenador controla la línea de montaje a través de equipos eléctricos
+adicionales. En una compañía de telecomunicaciones, el ordenador
+controla las líneas telefónicas que llegan a la centralita o en un
+banco de pruebas, el ordenador controla distinta instrumentación con
+la que realizar las medidas necesarias para llevar a cabo sus tests. 
+
+En todos estos casos, los ordenadores, junto con todo eso que los
+rodea y que ellos debe controlar, se suelen montar en lo que se llama un
+rack. Un rack no es otra cosa que un armario diseñado para albergar
+distintos equipos de una forma estable, compacta y sólida.
+
+Los racks utilizados normalmente tienen un ancho estándar de 19"
+(pulgadas) y es normal que los fabricantes de equipos distribuyan
+modelos para su montaje en estos racks de 19" (normalmente referidos
+en sus catálogos como ``rack mounted'').  
+
+Estos racks se dividen verticalmente en lo que se llama una ``U'',
+aproximadamente 2.45", y los equipos que se montan en los racks se
+caracterizan por el número de Us que ocupan en el rack, es decir, por
+el espacio vertical que ocupan. 
+
+A la hora de montar un ordenador en un rack, disponemos de varias posibilidades.
+
+\begin{itemize}
+\item Ordenadores para montaje en rack
+\item Uso de un subrack
+\end{itemize}
+
+
+\sectiontext{white}{black}{RACK MOUNTED COMPUTERS}
+
+Como decíamos podemos encontrar ordenadores especialmente diseñados
+para ser montados en racks de 19" en varios tamaños, siendo los más
+habituales los de 1 o 2 Us. 
+
+Esta solución es común, por ejemplo, en instalaciones que involucran a
+muchos ordenadores como sucede en las empresas de hosting/housing o en
+los clusters. Como nos podemos imaginar, en un espacio bastante
+reducido podemos disponer varios ordenadores de una forma
+ordenada. Por ejemplo, un rack de 18 Us tiene una altura de poco más
+de un metro, utilizando ordenadores de 1 U podremos meter 18
+ordenadores en ese rack. 
+
+\vspace{3cm}
+
+\sectiontext{white}{black}{SUB-RACKS Y BUSES ESPECIALES}
+
+Estamos acostumbrados a meter tarjetas de expansión en nuestros
+ordenadores de casa. Tarjetas PCI que se comunican con nuestro
+ordenador y le dan nuevas posibilidades. Pues bien, PCI es lo que se
+conoce como un bus y como os podéis imaginar no es el único. 
+
+Como decíamos más arriba, en entornos industriales es normal utilizar
+cosas ``más sólidas'' y además suelen estar diseñadas para ser
+incluidas dentro de un rack estándar de 19". Existen versiones
+especiales de buses comunes utilizados por ordenadores como el PCI o
+el VME (utilizado por máquinas basadas en el 68000 de Motorola),
+orientadas a la instrumentación, es decir, las ``tarjetas'' que vamos
+a poner a nuestro ordenador con elementos de medida que requieren
+señales especiales para funcionar correctamente. 
+
+\raggedcolumns
+
+\ebOpage{introcolor}{0.22}{EN LA PRÁCTICA}
+
+\rput(4,-23){\resizebox{!}{6cm}{{\epsfbox{box-pc104-1.eps}}}}
+
+Así, la extensión para instrumentación del bus PCI se llama PXI y la
+del bus VME recibe el nombre VXI. Otro bus utilizado para estos
+montajes en rack de los que estamos hablando es el cPCI (Compact PCI),
+una versión ``compacta'' del bus PCI, que ha resultado muy popular ya
+que los fabricantes de hardware no tienen que hacer grandes cambios a
+sus diseños (soluciones PMC + carrier). 
+
+Estos buses se suelen montar sobre un subrack que puede ser instalado
+en un rack mayor, y proporciona ``slots'' o ranuras en las que pinchar
+nuestras tarjetas, siendo el ordenador una más de esas tarjetas
+(normalmente es la tarjeta en el slot 0). 
+
+Estos sub-racks suelen tener unas medidas de 3, 6 o 9 Us, y un número
+variable de ranuras para pinchar tarjetas. Las tarjetas se suelen
+pinchar en posición vertical. 
+
+\sectiontext{white}{black}{SBC: SINGLE BOARD COMPUTERS}
+
+Los ordenadores de una sola placa (Single Board Computers o SBC) son,
+como su propio nombre indica, ordenadores completos en una sola
+placa. En general, estos ordenadores se pinchan en un bus como si
+fueran una tarjeta más, para permitir su comunicación con hardware
+adicional en el sistema. Es bastante habitual que los ordenadores para
+montaje en rack sean de este tipo, así como los denominados PCs
+industriales que también suelen seguir esta filosofía. 
+
+
+\sectiontext{white}{black}{PC-104 Y PC-104+}
+
+Los PC-104 y PC-104+ son pequeños ordenadores (10.4 cm de ahí su
+nombre) que poseen respectivamente un bus ISA o un bus PCI. La
+característica más salientable de esta solución, además de su reducido
+tamaño, es que las tarjetas de expansión se apilan sobre el
+ordenador. 
+
+Los PC-104 poseen un conector en su placa que permite pinchar tarjetas
+sobre él y cada una de las tarjetas pinchadas, proporciona ese mismo
+conector, de forma que tarjetas adicionales pueden ser incluidas. 
+
+De esta forma, el ordenador crece hacia arriba (o hacia abajo, según
+se mire) con cada nueva tarjeta que se le añada. 
+
+Los PC-104 son en general muy robustos y poseen una potencia de
+cálculo limitada, lo que los hace especialmente interesantes para
+instalaciones de control industrial y sistemas embebidos. 
+
+\columnbreak
+
+\sectiontext{white}{black}{TODAVÍA MÁS PEQUEÑITOS}
+
+Siguiendo nuestro camino hacia la nimiedad nos encontramos ordenadores
+todavía más pequeños con un tamaño similar al de una unidad de disco
+de 3.5". Realmente pequeños. 
+
+Este tipo de ordenador está orientado a su integración en un sistema
+mayor como un elemento más. Una característica de este tipo de
+ordenadores es que no vamos a encontrar un conector para el teclado,
+el ratón o el monitor, sino que nos encontraremos con un montón de
+pines (algo así como el conector IDE de nuestro disco duro) que llevan
+todas esas señales y somos nosotros los encargados de llevar cada uno
+de ellos al conector que más nos apetezca. 
+
+En general estos ordenadores se encuentran en el interior de los
+routers ADSL o de los {\em TiVOs} que tenemos en nuestra casa. En la
+última sección de este artículo podréis ver algunos modelos. 
+
+\sectiontext{white}{black}{SoC. SYSTEM ON CHIP}
+
+Los ordenadores que acabamos de ver son muy pequeños y útiles para
+montar pequeños dispositivos dedicados, sin embargo, otra tendencia
+para este tipo de soluciones son los denominados SoCs o System On
+Chip. 
+
+Básicamente, en un único chip se empaquetan absolutamente todos los
+elementos de un ordenador, excepto aquellos relacionados con la
+adaptación de señales para su conexión al mundo real. Es decir, de las
+patas de este chip salen todas las señales necesarias para su conexión
+a una red ethernet pero nosotros tenemos que poner un pequeño circuito
+para poder adaptar esas señales y sacarlas por un RJ45 estándar. 
+
+Un caso especial de SoCs son la última generación de FPGAs (Field
+Programmable Gate Array), la evolución de las CPLD, PLD, PAL/PLA,
+etc... Las FPGAs son ``hardware programable'', es decir, podemos
+programar que elementos hardware queremos que contenga y cambiarlos
+con posterioridad. De esta forma, podemos programar nuestra FPGA para
+que contenga un determinado microprocesador, un controlador PCI, un
+controlador ethernet y otro USB. 
+
+\begin{entradilla}
+{\em ``{\color{titlecolor}{Las soluciones SoC}} nos proporcionan un ordenador completo en un único chip.''}
+\end{entradilla}
+
+Esto que parece tan fácil, realmente lo es. En la actualidad un montón
+de fabricantes y más recientemente particulares han desarrollado una
+importante librería de lo que se conocen como ``cores''. Un ``Core''
+es una configuración de la FPGA para realizar una operación
+concreta. Existen ``cores'' para un gran número de circuitos
+normalmente utilizados en un ordenador. 
+
+Incluso se han desarrollado microprocesadores que sólo existen como una configuración de la FPGA (microblaze)
+
+\raggedcolumns
+\eOpage
+
+\rput(11,-7){\resizebox{!}{3cm}{{\epsfbox{picotux.eps}}}}
+\rput(11,-11.0){\resizebox{!}{3cm}{{\epsfbox{ucdimm.eps}}}}
+
+\rput(11,-14.5){\resizebox{!}{3.0cm}{{\epsfbox{mini-itx.eps}}}}
+\rput(11,-18){\resizebox{!}{3.5cm}{{\epsfbox{foxlx.eps}}}}
+
+\rput(11,-21){\resizebox{!}{3.5cm}{{\epsfbox{netstix.eps}}}}
+\rput(15,-21){\resizebox{!}{3.5cm}{{\epsfbox{connex400xm.eps}}}}
+
+\rput(11,-24.0){\resizebox{!}{3.5cm}{{\epsfbox{net4801.eps}}}}
+
+\bOpage{introcolor}{0.22}{EN LA PRÁCTICA}
+
+\sectiontext{white}{black}{CURIOSIDADES}
+
+Finalmente, y a modo de curiosidad vamos a nombrar un par de
+ordenadores más bien pequeñitos y que son capaces de correr GNU/Linux.  
+
+
+\begin{itemize}
+\item PicoTux. A simple vista, PicoTux es un conector de red RJ45,
+pero en realidad se trata de un linux embebido en un
+microcontrolador. PicoTux, además del interfaz de red fácilmente
+identificable dispone de un puerto serie de alta velocidad y un número
+reducido de líneas de entrada/salida. 
+
+\verb#http://www.picotux.com/producte.html#
+
+\item uCLinux. Realmente se trata de una distribución de linux
+preparada para funcionar sobre procesadores sin MMU (Memory Management
+Unit o Unidad de Gestión de Memoria). Los desarrolladores de uCLinux
+han creado una pequeña placa del tamaño de un módulo de memoria DIM
+con un microcontrolador y su distribución de linux embebida 
+
+\verb#www.uclinux.org/ #
+
+\item Mini-ITX. Las placas mini-ITX se han popularizado con los
+recientes barebones y ``ordenadores de salón''. Su reducido tamaño
+(170mm x 170mm) y bajo nivel de ruido las hacen especialmente
+interesantes para ponerlas en nuestro salón. 
+
+\verb#http://www.mini-itx.com/#
+
+\item Fox Board LX.  Un completo sistema linux en una placa de 66 mm x
+72 mm. La placa incorpora un procesador ETRAX 100LX a 100 MHz. La
+compañía que distribuye la placa (ACME Systems y no es cachondeo)
+proporciona un SDK para el desarrollo de aplicaciones sobre esta
+plataforma. El sistema proporciona toda clase de interfaces. 
+
+\verb# http://www.acmesystems.it/?id=4#
+
+\item La empresa Gumstix ofrece pequeños ordenadores basados en
+procesadores PXA (Intel XScale) y toda una serie de accesorios que
+incluyen varias tarjetas de expansión, cajas para el montaje de las
+placas, etc... 
+
+\verb#http://gumstix.com/#
+
+\item La empresa Soekris también comercializa pequeños sistemas especialmente orientados al desarrollo de sistemas de red como routers. Estas placas también tienen un tamaño que varía con el modelo. El tamaño de su placa net4801 es de 13.2cm x 14.4cm.
+
+\verb#http://soekris.com/#
+
+\end{itemize}
+
+\raggedcolumns
+\pagebreak
+
+\end{multicols}
+
+\pagebreak

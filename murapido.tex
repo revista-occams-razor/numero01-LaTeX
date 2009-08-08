@@ -1,0 +1,428 @@
+% Este fichero es parte del Número 1 de la Revista Occam's Razor
+% Revista Occam's Razor Número 1
+%
+% (c) 2007, Occam's Razor.
+% Contenido disponible bajo licencia Reconocimiento-No comercial-Compartir bajo la misma licencia 2.5 España de Creative Commons. Para ver una copia de esta licencia, visite http://creativecommons.org/licenses/by-nc-sa/2.5/es/ o envie una carta a Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+% 
+
+% Seccion Mú Rápido
+%
+% Incluye imagen del artículo
+\rput(2,-3.0){\resizebox{!}{4.5cm}{{\epsfbox{mascara.eps}}}}
+
+% -----------------------------------------------------
+% Cabecera
+\msection{introcolor}{black}{0.18}{MÚ RÁPIDO}
+
+\begin{flushright}
+\mtitle{12cm}{Crea tu propio Servicio de Internet}
+
+\msubtitle{10cm}{Exorcizando al superdemonio inetd}
+
+{\sf por Un Servidor}
+
+{\psset{linecolor=black,linestyle=dotted}\psline(-12,0)}
+
+\end{flushright}
+
+\vspace{2mm}
+% -----------------------------------------------------
+
+\begin{multicols}{2}
+
+% Definición de colores
+% FIXME: La definición en portada.tex no propaga.
+\definecolor{introcolor}{rgb}{0.6,0.7,0.3}
+\definecolor{titlecolor}{rgb}{0.4,0.5,0.1}
+\definecolor{excolor}{rgb}{0.8,0.8,0.8}
+
+% Introducción
+\colorbox{introcolor}{
+\begin{minipage}{.9\linewidth}
+
+{{\resizebox{!}{1.0cm}{Q}}{uién no ha necesitado alguna vez escribir su propio servidor?.
+Si tu respuesta es ``yo'', no desesperes, ya te tocará. Sin embargo,
+si solo necesitas un servicio muy simple, puede que no necesites
+vértelas con los {\em sockets} o cosas peores. En este artículo te
+descubrimos como utilizar el {\em superdemonio inetd} para crear
+servicios de una forma muy rápida, sencilla y ocupando muy poco. 
+}}
+
+\end{minipage}
+}
+
+% Cuerpo del artículo
+
+\sectiontext{white}{black}{inetd. EL SUPERDEMONIO}
+\vspace{2mm}
+
+Os preguntareis... ¿qué es eso del {\em superdemonio}?. Pues como su
+propio nombre indica, se trata de un servicio capaz de proporcionar
+otros servicios. Bueno, su nombre sugiere más bien una bestia
+pestilente con cuernos y rabo de gran tamaño, la bestia se entiende,
+pero esa frase quedaba muy bien ahí. 
+
+\begin{entradilla}
+{\em ``El superdemonio inetd nos permite crear servicios muy rápidamente''}
+\end{entradilla}
+
+Este demonio, cuando es lanzado, lee el fichero de configuración que
+se encuentra en {\tt /etc/inetd.conf}, el cual le proporciona
+información sobre los servicios que va a gestionar. 
+
+Una entrada típica de este fichero es tal cual así:
+
+{\scriptsize
+\begin{verbatim}
+ident   stream  tcp  wait  identd  /usr/sbin/identd    identd
+\end{verbatim}
+}
+
+Vamos a ver que significa cada una de las columnas de esta línea.
+
+\begin{itemize}
+\item La columna 1 indica el puerto en el que se instalará el
+servicio. En este caso, se está utilizando un nombre de servicio que
+el programa resolverá utilizando el fichero /etc/services, pero
+nosotros utilizaremos simplemente un número. 
+\item Las dos columnas siguientes nos permiten especificar el tipo de
+socket y el protocolo a utilizar... Como no estamos interesados en los
+sockets por el momento, las dejaremos como están. 
+\item La siguiente columna solo tiene sentido para sockets del tipo
+{\em datagrama}, los que se utilizan típicamente con el protocolo UDP,
+así que también la vamos a obviar en este artículo (esta es la sección
+mú rápido... que esperabas?) 
+\item La siguiente columna especifica el usuario con el que se
+ejecutará el servicio. nobody es una buena elección 
+\item Finalmente, las dos últimas columnas indican el programa que se
+ejecutará para proporcionar el servicio y los parámetros de
+este. Recordad que el primer parámetro de cualquier programa es el
+nombre del programa, así que como mínimo siempre tendremos ese
+parámetro, como se puede apreciar en el ejemplo. 
+\end{itemize}
+
+Vale, todo esto está muy bien, pero cómo escribo mi servicio. Pues de
+la forma en la que se hacen las cosas en UNIX, con {\em stdin} y {\em
+stdout}. 
+
+\sectiontext{white}{black}{stdin Y stdout}
+\vspace{2mm}
+
+Aunque podrían parecer dos engendros gemelos del inframundo, amiguitos
+del superdemonio inetd, realmente se trata de la entrada y salida
+estándar. La entrada/salida estándar por defecto se asocia a la
+consola, así, la entrada estándar se asocia al teclado, mientras que
+la salida estándar a la pantalla de nuestro terminal. 
+
+Lo que sucede con estos dos dispositivos es que pueden ser
+redireccionados, es decir, cualquiera de ellos puede ser sustituido
+por cualquier otro y esto es precisamente lo que hace inetd. Por una
+parte, inetd, redirecciona la conexión de red entrante a la entrada
+estándar del proceso que lanza (las últimas columnas del fichero de
+configuración), a la vez que redirecciona la salida estándar de ese
+proceso a la conexión de red. 
+
+\begin{entradilla}
+{\em ``inetd se comunica con los servicios utilizando stdin y stdout''}
+\end{entradilla}
+
+
+El resultado de todo esto es que cualquier cosa que se envíe por la
+red, se leerá como si se tratara de una entrada por teclado, y todo lo
+que enviemos a la pantalla, se enviará por la red en lugar de
+mostrarlo en el terminal. 
+
+\raggedcolumns
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% End Of Page + Begin Of Page
+\ebOpage{introcolor}{0.18}{MÚ RÁPIDO}
+
+Para ilustrar todo esto vamos a implementar el clásico servidor {\em
+echo} que repite todo lo que le decimos. Lo interesante del servidor
+de eco es que se comprueba tanto la transmisión como la recepción de
+datos y además se verifica que no se pierden datos en ninguno de los
+dos caminos. 
+
+
+\sectiontext{white}{black}{UN SERVIDOR DE echo}
+\vspace{2mm}
+
+Nuestra primera versión del servidor de echo la vamos a hacer en
+lenguaje C... que nadie se asuste, es un programa tan tonto que no
+requiere ni explicación, aunque la vamos a dar. El programa hace una
+lectura de la entrada estándar, y lo que lee, lo envié a la salida
+estándar. 
+
+\lstset{language=C,frame=tb,framesep=5pt,basicstyle=\small}   
+\begin{lstlisting}
+#include <stdio.h>
+
+int main() {
+  char buffer[1024];
+  gets (buffer);
+  printf ("%s", buffer);
+}
+\end{lstlisting}
+
+
+
+Ahora podemos compilar el programa, utilizando la herramienta make. Si
+hemos llamado a nuestro servicio {\em echo.c}, ejecutamos: 
+
+{\small
+\begin{verbatim}
+occam@razor:/tmp$ make echo
+cc     echo.c   -o echo
+/tmp/ccbhjBK1.o(.text+0x1d): In function `main':
+: warning: the `gets' function is dangerous 
+and should not be used.
+\end{verbatim}
+}
+%$
+
+Irresponsablemente obviamos el warnning que obtenemos en la
+compilación (muy pronto carecerá de interés), cambiamos el propietario
+de nuestro servicio e informamos a inetd del nuevo servicio que
+queremos que gestione, tras lo cual lo reiniciamos para que se entere.  
+
+\begin{entradilla} 
+{\em ``En apenas cuatro líneas de código podemos programar un servidor de ECHO''} 
+\end{entradilla} 
+
+{\small
+\begin{verbatim}
+occam@razor:tmp$ chown nobody:nobody /tmp/echo
+occam@razor:tmp$ echo "6666 stream tcp wait \
+> nobody /tmp/echo echo" >> /etc/inetd.conf
+occam@razor:tmp$ /etc/init.d/inetd restart
+\end{verbatim}
+}
+%$
+
+Sí, hay formas más elegantes de reiniciar inetd, pero eso queda para
+los lectores del {\tt man} :).
+
+Ahora ya podemos probar nuestro nuevo servicio
+
+{\small
+\begin{verbatim}
+occam@razor:tmp$ telnet localhost 6666
+Hola Mundo!!!
+Hola Mundo!!!
+occam@razor:tmp$ 
+\end{verbatim}
+}
+
+%$
+
+Ingreíble, hemos escrito nuestro primer servicio unix sin necesidad de saber lo que es un socket... tranquilos que lo sabremos en próximas entregas, pero por ahora mola no?.
+
+\sectiontext{white}{black}{DEJANDO EL SERVIDOR DECENTE}
+\vspace{2mm}
+
+Nuestra primera versión del servidor, generaba un feo warnning que
+además es bastante peligroso, pero resultaba más sencillo ver como la
+entrada y salida estándar se corresponden por defecto con el teclado
+y la consola. 
+
+Vamos a reescribir nuestro servidor de una forma más correcta. El
+programa hace exactamente lo mismo, pero ahora accedemos directamente
+a los descriptores de fichero de la entrada y salida
+estándar. Veámoslo: 
+
+\lstset{language=C,frame=tb,framesep=5pt,basicstyle=\small}   
+\begin{lstlisting}
+#include <unistd.h>
+
+int 
+main(int argc, char *argv[])
+{
+  char buffer[1024];
+  int  len;
+
+  len = read (0, buffer, 1024);
+  write (1, buffer, len);
+
+  return 0;
+}
+\end{lstlisting}
+
+
+Como podemos ver en este ejemplo, leer del descriptor de ficheros 0 es
+equivalente a un gets y escribir en el descriptor de fichero 1 es lo
+mismo que un printf.  
+
+\sectiontext{white}{black}{CUESTIÓN DE TAMAÑO}
+\vspace{2mm}
+
+El servidor de echo que acabamos de escribir, ocupa unos 12Kb, los
+cuales podemos dejar en 3Kb utilizando el comando strip: 
+
+{\small
+\begin{verbatim}
+occam@razor:tmp$ ls -lh
+total 12K
+-rwxr-xr-x  1 edma edma  12K Apr 20 20:48 echo
+occam@razor:tmp$ strip echo; ls -lh
+total 3K
+-rwxr-xr-x  1 edma edma 3.0K Apr 20 20:49 echo
+\end{verbatim}
+}
+
+Un tamaño ridículo para los tiempos que corren, pero y si lo
+pudiéramos dejar en unos poco bytes, por ejemplo sustituyendo nuestro
+ejecutable por un pequeño script perl como este: 
+
+\lstset{language=Perl,frame=tb,framesep=5pt,basicstyle=\small}   
+\begin{lstlisting}
+#!/usr/bin/perl
+
+$|=1;
+$_ = <>; print;
+\end{lstlisting}
+
+
+Ahora nuestro servicio ocuparía sólo:
+
+{\small
+\begin{verbatim}
+occam@razor:tmp$ ls -lh
+total 38
+-rw-r--r--  1 edma edma   38 Apr 20 20:52 echo2
+occam@razor:tmp$ 
+\end{verbatim}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\raggedcolumns
+
+\ebOpage{introcolor}{0.18}{MÚ RÁPIDO}
+.... 38 bytes ..... ingreíble!!!!!
+
+Estos 38 bytes son ficticios, ya que para poder ejecutar este
+servidor, necesitamos tener el interprete de Perl instalado que ocupa
+bastante más que nuestros 3Kbytes iniciales. Sin embargo, normalmente
+si que tenemos una shell.... uhmmm!!!! 
+
+A partir de aquí ya podéis hacer vuestras propias pruebas, aunque para
+terminar vamos a añadir un par de secciones geek para flipados :) 
+
+
+\sectiontext{white}{black}{GEEK ZONE 1: UN INSTALADOR}
+\vspace{2mm}
+
+Ahora que tenemos nuestro servidor preparado, que tal si preparamos un instalador?... podríamos usar InstallShield(TM) o similares, pero como somos unos geeks vamos a hacer un script shell para instalar nuestro servicio.
+
+El script es el siguiente:
+
+
+\lstset{language=Bash,frame=tb,framesep=5pt,basicstyle=\small}   
+\begin{lstlisting}
+#!/bin/sh
+SERVICE_PATH=$HOME
+
+# Crea el fichero fuente
+cat << EOP > $SERVICE_PATH/echo_service.c
+#include <unistd.h>
+
+int main () {
+  char buffer[1024];
+  int  len;
+
+  len = read (0, buffer, 1024);
+  write (1, buffer, len);
+
+  return 0;
+}
+EOP
+
+# Lo compila y borra el fichero fuente
+gcc $SERVICE_PATH/echo_service.c \
+    -o $SERVICE_PATH/echo_service
+rm $SERVICE_PATH/echo_service.c
+
+# Configuramos inetd
+echo "8000 stream tcp nowait root \
+$SERVICE_PATH/echo_service" >> \
+/etc/inetd.conf
+
+# Reinicia inetd para activar servicio
+/etc/init.d/inetd restart
+\end{lstlisting}
+
+
+Como podéis ver, el script contiene el código fuente del servicio, no
+el ejecutable. El script crea el fichero fuente en un directorio, lo
+compila y lo instala.... ¿qué ganamos con esto?... pues que nuestro
+servicio es ahora multiplataforma. Podemos instalarlo en un procesador
+Intel, en un SPARC en un PA-RISC, nos da igual, el ejecutable se
+genera en la plataforma de destino. 
+
+\sectiontext{white}{black}{GEEK ZONE 2: VERSION MÁS PEQUEÑA}
+\vspace{2mm}
+
+Para terminar con las geekadas... que os parecería hacer nuestro
+servidor más pequeño?... parece difícil no?, pero tenemos un par de
+opciones más, como por ejemplo, reimplementarlo en ensamblador. 
+
+Nuestro servicio de echo queraría tal que así:
+
+\lstset{language=[x86masm]Assembler,frame=tb,framesep=5pt,basicstyle=\small}   
+\begin{lstlisting}
+;; Servicio ECHO para usar con inetd
+;; (c) Occam's Razor, 2006
+;; 
+;; compilar con:
+;;   nasm -f elf echo.asm
+;;   ld -s -o echo echo.o
+	
+section	.text
+  global _start   ; Requerido por el linker (ld)
+
+_start:           ; Punto de entrada al programa
+  ;; Leer Entrada
+  mov  edx, 1024
+  mov  ecx, bread
+  xor  ebx,ebx    ; stdin -> 0
+  mov  eax, 3     ; Llamada al sistema read 
+  int  0x80
+
+  ;; Escribir salida
+  inc   ebx       ; stdout -> 1
+  mov   eax, 4    ; Llamada al sistema write
+  int   0x80
+
+  mov   eax,1     ; Llamada al sistema exit
+  int   0x80          
+	
+;; Sección de Datos no Inicializados
+section .bss
+  bread   resb   1024 ; unsigned char bread[1024];
+\end{lstlisting}
+
+El código fuente es un poco más largo, pero veamos que pasa al compilarlo.
+
+\begin{verbatim}
+occam@razor:tmp$ nasm -f elf echo.asm
+occam@razor:tmp$ ld -s -o echo echo.o
+occam@razor:tmp$ ls -lh
+total 428
+-rwxr-xr-x  1 edma edma  428 Apr 20 21:05 echo
+occam@razor:tmp$
+\end{verbatim} 
+
+No son los 38 bytes de la versión Perl, pero no necesitamos ningún
+interprete instalado en el sistema.... Mooolaaaa!!! 
+
+\sectiontext{white}{black}{EN EL PRÓXIMO NÚMERO}
+\vspace{2mm}
+
+Esto ha sido todo en esta entrega, en el próximo número, sí veremos
+como montar un servicio completo con sus sockets y sus cosas. Por
+ahora, tenemos material para ir haciendo cosillas.  
+
+Hasta la próxima entrega!.
+
+\raggedcolumns
+\eOpage % End Of Page
+

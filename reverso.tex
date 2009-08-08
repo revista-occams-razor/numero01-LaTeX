@@ -1,0 +1,394 @@
+% Este fichero es parte del Número 1 de la Revista Occam's Razor
+% Revista Occam's Razor Número 1
+%
+% (c) 2007, Occam's Razor.
+% Contenido disponible bajo licencia Reconocimiento-No comercial-Compartir bajo la misma licencia 2.5 España de Creative Commons. Para ver una copia de esta licencia, visite http://creativecommons.org/licenses/by-nc-sa/2.5/es/ o envie una carta a Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+% 
+
+% Sección Reverso Tenebroso
+%
+% Incluye imagen del artículo
+\rput(2,-3.0){\resizebox{!}{4.5cm}{{\epsfbox{jeringuilla-2.eps}}}}
+
+% -------------------------------------------------------------
+% Cabecera
+\msection{introcolor}{black}{0.28}{REVERSO TENEBROSO}
+
+\begin{flushright}
+\mtitle{12cm}{Inyección de Código en Librerías Dinámicas}
+
+\msubtitle{10cm}{Conoce los secretos de LD\_PRELOAD}
+
+{\sf por Er ATS}
+
+{\psset{linecolor=black,linestyle=dotted}\psline(-12,0)}
+
+\end{flushright}
+
+\vspace{2mm}
+% -------------------------------------------------------------
+
+\begin{multicols}{2}
+
+% Definición de colores
+% FIXME: La definición en portada.tex no propaga.
+\definecolor{introcolor}{rgb}{0.6,0.7,0.3}
+\definecolor{titlecolor}{rgb}{0.4,0.5,0.1}
+\definecolor{excolor}{rgb}{0.8,0.8,0.8}
+
+% Introducción
+\colorbox{introcolor}{
+\begin{minipage}{.9\linewidth}
+
+{{\resizebox{!}{1.0cm}{E}}{n esta primera incursión en los entresijos
+de la ingeniería inversa, vamos a explorar una de las formas más
+sencillas para la inyección de código. Dejando a un lado los usos
+``curiosos'', la inyección de código en aplicaciones binarias nos
+proporciona una potente herramienta para la depuración o adaptación
+de aplicaciones de las cuales no disponemos de su código fuente. 
+}}
+
+\end{minipage}
+}
+
+% Cuerpo del artículo
+
+\sectiontext{white}{black}{LIBRERÍAS DINÁMICAS}
+
+
+\vspace{2mm}
+
+La mayoría de las aplicaciones actuales utilizan lo que se conoce
+como librerías dinámicas, hecho que les proporciona ciertas ventajas. 
+En primer lugar los ejecutables son más pequeños ya que parte de 
+su funcionalidad se a movido ha la librerías. Las funcionalidades de la
+librería pueden ser utilizadas por varias aplicaciones, de forma
+que las actualizaciones de éstas se reflejan en varios ejecutables 
+(frente a la actualización de cada ejecutable por separado).
+
+Las aplicaciones que utilizan librerías dinámicas, mantienen una referencia
+a las mismas, de forma que el cargador dinámico (ldd) pueda encontrarlas
+cuando solicitamos la ejecución de una aplicación. Estas referencias se pueden obtener
+utilizando el comando \texttt{ldd} que nos proporciona una salida como la siguiente:
+
+{\scriptsize
+\begin{verbatim}
+$ ldd /bin/echo
+        libc.so.6 => /lib/tls/libc.so.6 (0x4002b000)
+        /lib/ld-linux.so.2 => /lib/ld-linux.so.2 (0x40000000)
+$
+\end{verbatim}
+}
+
+
+Como podemos ver, el comando \texttt{ldd} del ejemplo anterior, muestra la lista de librerías 
+dinámicas utilizada por el programa \texttt{echo}. Por ahora no nos
+interesa la información extra que proporciona \texttt{ldd}. Sólo nos interesa
+saber que el programa depende de dos librerías dinámicas.
+
+\sectiontext{white}{black}{PREPARANDO NUESTRO EJEMPLO}
+
+Para poder trabajar en un entorno controlado, lo primero que vamos a hacer
+es generar un sencillo programa de test y un par de librerías dinámicas
+con las que trastear.
+
+Para ello utilizaremos las autotools de GNU que nos simplifican la generación
+tanto de ejecutables como de librerías. Creamos un directorio para nuestro
+proyecto (por ejemplo injection) y escribimos (o copiamos :) nuestro minimalista
+configure.ac (si estamos a la última y ya no usamos aquellos .in del pasado).
+
+\columnbreak
+
+{\small
+\begin{verbatim}
+AC_INIT
+AM_INIT_AUTOMAKE(injection, 0.0.1)
+
+AM_CONFIG_HEADER(config.h)
+AM_MAINTAINER_MODE
+
+AC_PROG_CC
+AC_HEADER_STDC()
+AC_PROG_LIBTOOL
+
+AC_OUTPUT(Makefile)
+\end{verbatim}
+}
+
+Ahora solo tenemos que escribir el make file para el {\em automake} (Makefile.am),
+que para nuestro caso será algo como esto:
+
+{\small
+\begin{verbatim}
+lib_LTLIBRARIES=libinjection.la libinjection1.la
+
+libinjection_la_SOURCES=injection.c
+libinjection_la_LDFLAGS=-ldl
+
+libinjection1_la_SOURCES=injection1.c
+libinjection1_la_LDFLAGS=-ldl
+
+CFLAGS+=-D_GNU_SOURCE
+
+noinst_PROGRAMS=test
+test_SOURCES=test.c
+\end{verbatim}
+}
+
+\begin{entradilla}
+{\em ``Es muy sencillo {\color{titlecolor}{crear librerías dinámicas}} utilizando la herramienta libtool''}
+\end{entradilla}
+
+Este makefile nos va a generar dos librerías dinámicas llamadas \texttt{libinjection.so} y
+\texttt{libinjection1.so} respectivamente y un pequeño programa de test que el comando
+\texttt{make install} nos instalará.
+
+Ahora solo nos queda ejecutar las autotools para conseguir un configure y poder compilar nuestro código
+
+{\small
+\begin{verbatim}
+aclocal
+libtoolize --force --copy 
+autoheader
+automake --add-missing --copy --foreign --include-deps
+autoconf
+\end{verbatim}
+}
+
+Es habitual incluir los comandos anteriores en un shell script con nombre {\em bootstrap} y
+tenerlo siempre a mano para ahorrarse este último paso, aunque hay
+otras formas de proceder en las que no vamos a entrar. Ahora ya
+estamos en condiciones de escribir nuestra pequeña librería. 
+
+\ebOpage{introcolor}{0.28}{REVERSO TENEBROSO}
+
+\rput(13,-22){\resizebox{!}{7cm}{{\epsfbox{publi03.eps}}}}
+
+\sectiontext{white}{black}{LD\_PRELOAD}
+
+Para comprender el siguiente ejemplo, primero debemos conocer el uso
+de la variable de entorno \texttt{LD\_PRELOAD} que será la forma de
+inyectar nuestro código en la aplicación.
+
+La variable de entorno \texttt{LD\_PRELOAD} permite forzar la carga de ciertas
+librerías dinámicas antes de que el programa a ejecutar se cargue en memoria. 
+El hecho de cargar una librería dinámica antes que otra, implica que cualquier 
+función en la librería precargada se ejecutará antes que su homónima en librerías
+cargadas posteriormente.
+
+Así, si creamos una librería dinámica con nuevas versiones de las funciones en
+una determina aplicación, las funciones de nuestra librería sustituirán a las del
+programa consiguiendo ``inyectar'' código arbitrario en el mismo. Ahora veremos todo
+esto con un ejemplo que clarificará más las cosas.
+
+\sectiontext{white}{black}{MICRO-SANDBOX}
+
+Los más antiguos del lugar recordarán que los parques infantiles tenía arena en el suelo,
+sobre todo al final de los toboganes y otros elementos lúdicos que nos permitían partirnos
+la crisma al más mínimo descuido. Normalmente, esa arena estaba en una ``caja'', bueno,
+se veían una especie de cajón semi enterrado destinado a mantener la arena en su sitio.
+
+Bien, pues un ``sandbox'' es una de esas cajas de arena de los antiguos parques infantiles,
+un dispositivo destinado a que un programa no se ``dañe'' o más bien, que el programa
+no dañe nada en el sistema. Quizás el sandbox más conocido es el que se monta con el 
+comando \texttt{chroot}, junto al incluido en la máquina virtual Java que se popularizó con
+el uso de applets en un entorno inseguro como Internet.
+
+\begin{entradilla}
+{\em ``{\color{titlecolor}{Un sandbox proporciona un entorno seguro}} para la ejecución de programas''}
+\end{entradilla}
+
+Para ilustrar el uso de \texttt{LD\_PRELOAD} vamos a montar un micro-sandbox para evitar
+que cualquier programa escriba datos en el directorio \texttt{/tmp}. Sí, esto es un poco
+absurdo, pero así nos sale un ejemplo muy sencillo.
+
+Para nuestro ejemplo, simplemente vamos a escribir una versión de la función \texttt{fopen}
+que compruebe el nombre del fichero y en el caso de tratarse del directorio tmp retorne un
+error.
+
+\sectiontext{white}{black}{UN NUEVO FOPEN}
+
+Editamos nuestro fichero injector.c y añadimos el código siguiente:
+
+\columnbreak
+
+\lstset{language=C,frame=tb,framesep=5pt,basicstyle=\small}   
+
+\begin{lstlisting}
+#include <stdio.h>
+#include <string.h>
+#include <dlfcn.h>
+
+FILE*
+fopen (const char *path, const char *mode)
+{
+FILE* (*real_fopen)(const char*, const char*);
+
+printf ("fopen_wrapper: Entrando\n");
+if (strncmp (path, "/tmp", 4) == 0)
+  {
+    fprintf (stderr, "fopen_wrapper:"
+             "Acceso Denegado '%s'\n", path);
+    return NULL;
+  }
+/* Consigue el puntero al fopen real */
+real_fopen = dlsym (RTLD_NEXT, "fopen");
+return real_fopen (path, mode);
+}
+\end{lstlisting}
+
+
+Lo primero que observamos es que la declaración de nuestra función es exactamente
+la misma que la de la función de la librería C estándar \texttt{fopen}. Las primeras líneas de la
+función llevan a cabo la comprobación del nombre del fichero que queremos abrir y
+en caso de que sea positiva devuelve el valor NULL, igual que la función \texttt{fopen}
+original.
+
+Si el directorio al que pretendemos acceder está permitido, entonces tenemos que
+obtener la función \texttt{fopen} real y ejecutarla, devolviendo el stream adecuado
+a la aplicación principal.
+
+Para ello, hemos declarado un puntero a función con un prototipo compatible con 
+nuestro \texttt{fopen} y hemos usado la función \texttt{dlsym} para obtener el puntero
+a la función \texttt{fopen} ``original''. Realmente no estamos obteniendo el puntero al
+\texttt{fopen} original, sino al siguiente \texttt{fopen} disponible (parámetro
+\texttt{RTLD\_NEXT}. Esto permite enlazar varios {\em wrappers} a la función de interés.
+
+Para comprobar este último comportamiento generamos el fichero
+injector1.c idéntico al primero, pero modificando el mensaje del
+primer printf para que podamos identificar que el programa a pasado
+por ese punto. Eso os lo dejamos a vosotros. 
+
+\raggedcolumns
+\ebOpage{introcolor}{0.28}{REVERSO TENEBROSO}
+
+\sectiontext{white}{black}{UN PROGRAMA DE EJEMPLO}
+
+Ahora solo tenemos que escribir un sencillo programa de ejemplo que
+use la función fopen para probar nuestro micro-sandbox. Algo como
+esto: 
+
+\lstset{language=C,frame=tb,framesep=5pt,basicstyle=\small}   
+\begin{lstlisting}
+#include <stdio.h>
+
+int
+test (const char *fname)
+{
+FILE *f;
+
+if ((f = fopen (fname, "wt")) == NULL)
+  fprintf (stderr, 
+       "No puedo abrir fichero '%s'\n", 
+        fname);
+else
+  {
+    fprintf (f, "Hola Mundo!!!\n");
+    fclose (f);
+  }
+}
+
+int
+main ()
+{
+  test ("/tmp/preload_test.test");
+  test ("preload_test.test");
+  return 0;
+
+}
+\end{lstlisting}
+
+Como podemos comprobar el programa proporciona una función que intenta abrir un fichero
+y en caso de que sea posible, lo sustituye por la cadena ``Hola Mundo!!!''.
+
+\begin{entradilla}
+{\em ``{\color{titlecolor}{Con LD\_PRELOAD podemos modificar funciones}} en librerías dinámicas''}
+\end{entradilla}
+
+
+Compilamos con el típico {\tt (./configure \&\& make)} y veamos el resultado.
+
+\sectiontext{white}{black}{NADA DE ESCRIBIR EN tmp}
+
+Lo primero que hacemos es ejecutar nuestro programa de test
+normalmente y comprobar que se genera un fichero en /tmp y otro en
+nuestro directorio actual.  
+
+{\small
+\begin{verbatim}
+$ ./test
+$ ls /tmp
+preload_test.test
+\end{verbatim}
+}
+
+Ahora probemos nuestro micro-sandbox. No olvidéis borrar el fichero de ejemplo de /tmp.
+
+{\scriptsize
+\begin{verbatim}
+$ rm /tmp/preload_test.test
+$ LD_PRELOAD=.libs/libinjector.so ./test
+fopen_wrapper: Entrando
+fopen_wrapper: Accesso Denegado a '/tmp/preload_test.test'
+No puedo abrir fichero '/tmp/preload_test.test'
+fopen_wrapper: Entrando
+\end{verbatim}
+}
+%$
+
+Estupendo!!!. Hemos visto nuestras líneas de traza en la librería y el mensaje
+de acceso denegado al intentar escribir en /tmp. Comprobemos que no se ha generado
+ningún fichero.... somos la bomba!
+
+Lo del \texttt{.libs} es porque ese es el lugar en el que libtool genera las librerías.
+Hasta que no se ejecute un \texttt{make install} las librerías no pasan al directorio
+apropiado (/usr/lib o /usr/local/lib).
+
+Ahora vamos a ver si nuestra cadena de wrappers funciona correctamente.
+
+{\scriptsize
+\begin{verbatim}
+$ rm /tmp/preload_test.test
+$ LD_PRELOAD=.libs/libinjector.so:.libs/libinjector1.so ./test
+fopen_wrapper: Entrando
+fopen_wrapper: Accesso Denegado a '/tmp/preload_test.test'
+No puedo abrir fichero '/tmp/preload_test.test'
+fopen_wrapper: Entrando
+fopen_wrapper1: Entrando
+\end{verbatim}
+}
+%$
+
+Vemos que, en el caso de que todo sea correcto, además pasamos por la segunda librería, como demuestra la última línea del ejemplo anterior. Cuando se intenta acceder al directorio /tmp, la primera librería ya bloquea el progreso y nunca llegamos a la segunda, por eso aparece un solo mensaje de la segunda librería.
+
+\sectiontext{white}{black}{OTRAS APLICACIONES}
+
+Como os podéis imaginar, los usos de \texttt{LD\_PRELOAD} son ilimitados. Algunos ejemplos podrían ser... sandbox... 1, 2, 3, responda otra vez:
+
+\begin{itemize}
+\item Sandboxes
+\item Cifrado/compresión/manipulación en general de ficheros
+\item Test Unitarios/Mock Objects
+\item Programación por Contrato
+\item Programación Orientada a Aspectos
+\item Depuración
+\item Paralelización de Tareas
+\end{itemize}
+
+Con todo lo que hemos comentado hasta el momento, podéis investigar
+por vosotros mismos cualquiera de estas aplicaciones, y seguro que en
+el trabajo diario aparecerán posibles usos de esta técnica. 
+
+\sectiontext{white}{black}{RESUMIENDO...}
+
+En este pequeño artículo hemos visto como utilizar la variable de
+entorno LD\_PRELOAD para modificar el comportamiento de una librería
+dinámica. Hemos visto como crear un sencillo {\em ``sandbox''} y
+apuntado algunas ideas de como aplicar lo que hemos aprendido. 
+
+No reparéis en enviarnos cualquier aplicación güay. No desesperéis, en
+próximas entregas seremos más malos :* 
+
+
+\end{multicols}
+
